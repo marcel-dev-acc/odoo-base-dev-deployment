@@ -14,10 +14,3 @@ RUN /usr/local/bin/python -m pip install --upgrade pip
 RUN pip install setuptools==57.0.0 wheel==0.36.2
 RUN pip install --no-cache-dir -r /odoo/CommunityPath/requirements.txt
 # CMD ["python", "/odoo/CommunityPath/odoo-bin --addons-path=addons -d postgres"]
-
-
-
-
-# For testing
-# COPY /test-script .
-# CMD ["python", "/odoo/main.py"]
