@@ -6,7 +6,7 @@ services:
     build: .
     restart: always
     ports:
-      - "3001:8069"
+      - "9000:8069"
       # - "5450:5432"
     depends_on: 
       - db
