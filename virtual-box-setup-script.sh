@@ -24,7 +24,7 @@ python3 --version
 # List pip version
 pip3 --version # Should fail
 
-# Install python3 pip3sudo apt
+# Install python3 pip3 sudo apt
 sudo apt install python3-pip
 
 # Install Docker

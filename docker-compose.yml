@@ -4,38 +4,37 @@ services:
 
   odoo:
     build: .
+    container_name: odoo
     restart: always
     ports:
-      - "9000:8069"
-      # - "5450:5432"
-    depends_on: 
+      - 9000:8069
+    depends_on:
       - db
-    # environment:
-    #   - HOST=db
-    #   - PORT=5432
-    #   - POSTGRES_DB=postgres
-    #   - USER=odoo
-    #   - PASSWORD=odoo
-    # command: python /odoo/CommunityPath/odoo-bin --addons-path=/odoo/CommunityPath/addons
     command: "python /odoo/CommunityPath/odoo-bin \
               --addons-path=/odoo/CommunityPath/addons \
-              --db_host=172.27.0.2 \
+              --db_host=postgres \
               --db_port=5432 \
               --database=postgres \
               --db_user=odoo \
               --db_password=odoo \
               --init=base"
-    # psql -h 172.27.0.2 -p 5432 -U odoo postgres
+    networks:
+      - odoo-net
 
   db:
     image: postgres:13.3-alpine
+    container_name: postgres
     restart: always
     environment:
       - POSTGRES_PASSWORD=odoo
       - POSTGRES_USER=odoo
       - POSTGRES_DB=postgres
     ports:
-      # - "5450:5432"
-      - "5432:5432"
+      - 5432:5432
+    networks:
+      - odoo-net
 
-  
+networks:
+  odoo-net:
+    driver: bridge
+    name: odoo-net
