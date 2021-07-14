@@ -1,22 +1,33 @@
 # Marcel - Odoo Source Code Deployment
 This project started by taking Odoo v14 and containerising the source code. The project aims to automate the process of initialising a fully functioning production ready system that is served from docker containers. Docker offers us the ability to automate and deploy a fairly heavy system in a matter of minutes, this coupled with deployment scripts is extremely advantageous in leveraging the current functionality provided by Odoo.
 
+<a id="table-of-contents"></a>
 ## Table of Contents
-- [1. UX](##UX)
-  * 1.1. Strategy
-  * 1.2. Structure
-- [2. Features](#features)
-- [3. Technologies Used](#technologies-used)
-- [4. Testing](#testing)
-- [5. Deployment](#deployment)
-- [6. Development Cycle](#development-cycle)
-- [7. End Product](#end-product)
-- [8. Known Bugs](#known-bugs)
-- [9. Credits](#credits)
+<ol style="list-style-type: none;">
+  <li>
+    1. <a href="#UX">User Experience</a>
+    <ol style="list-style-type: none;">
+      <li>1.1. Strategy</li>
+      <li>1.2. Structure</li>
+    </ol>
+  </li>
+  <li>2. <a href="#features">Features</a></li>
+  <li>3. <a href="#technologies-used">Technologies Used</a></li>
+  <li>4. <a href="#testing">Testing</a></li>
+  <li>5. <a href="#deployment">Deployment</a></li>
+  <li>6. <a href="#development-cycle">Development Cycle</a></li>
+  <li>7. <a href="#end-product">End Product</a></li>
+  <li>8. <a href="#known-bugs">Known Bugs</a></li>
+  <li>9. <a href="#credits">Credits</a></li>
+  <li>10. <a href="#fundamentals">Fundamentals</a></li>
+</ol>
 
-<a name="UX"></a>
+<a id="UX"></a>
+
 ## 1. User Experience
-#### [Go to top](##table-of-contents)
+
+<a href="#table-of-contents"><i>Go to the top</i></a>
+
 The user experience encompasses aspects of how the customer interacts with the product.
 
 ### 1.1. Strategy
@@ -34,28 +45,37 @@ The structure illustrated below is to showcase the primary files of concerns in 
     └── virtual-box-setup-script.sh
 ```
 
-<a name="features"></a>
-## 2. Features
-#### [Go to top](##table-of-contents)
+<a id="features"></a>
 
-<a name="technologies-used"></a>
+## 2. Features
+
+<a href="#table-of-contents"><i>Go to the top</i></a>
+
+<a id="technologies-used"></a>
+
 ## 3. Technologies Used
-#### [Go to the top](##table-of-contents)
+
+<a href="#table-of-contents"><i>Go to the top</i></a>
 - shell
 - docker
 - docker-compose
 - python3.8
 
-<a name="testing"></a>
+<a id="testing"></a>
+
 ## 4. Testing
-#### [Go to top](##table-of-contents)
+
+<a href="#table-of-contents"><i>Go to the top</i></a>
 ### Automated Testing
 ### Manual Testing
 ### Bugs Resolved
 
-<a name="deployment"></a>
+<a id="deployment"></a>
+
 ## 5. Deployment
-#### [Go to top](##table-of-contents)
+
+<a href="#table-of-contents"><i>Go to the top</i></a>
+
 A lot of the statements made below will mostly be superficial.
 1) Build a [Virtual Box](https://www.virtualbox.org/) machine with an [Ubuntu](https://ubuntu.com/download/flavours) image. Make sure that you have at least 2GB of memory and at least 30GB of storage space.
 2) Clone this repository into your VM or host machine
@@ -65,9 +85,22 @@ A lot of the statements made below will mostly be superficial.
 
 Considering that the Odoo walk-through has more than 5 steps I hope that the above significantly reduces your "bring to production time".
 
-<a name="development-cycle"></a>
+Once Odoo was responding on http:localhost:9000 you needed to configure and secure the database, the below steps should be taken:
+1) Click on manage database
+2) Click on SET MASTER PASSWORD > enter in your master password
+3) Go back to login
+4) login using username = admin & password = admin
+5) Click in top left corner
+6) Click on settings
+7) Change default admin password
+8) Input a more secure password
+
+<a id="development-cycle"></a>
+
 ## 6. Development Cycle
-#### [Go to top](##table-of-contents)
+
+<a href="#table-of-contents"><i>Go to the top</i></a>
+
 The first issue I had while working with Odoo was how do I develop the source code. The easy installations involved downloading the binaries on Ubuntu and compiling Odoo from binaries, alternatively, on Windows getting the installation files and running Odoo that way.
 
 A bit of research yielded access to the source code which is mirrored on [GitHub](https://github.com/odoo/odoo). The source code is fairly easy to access, simply clone the repository and there is it. Odoo's documentation on [installing](https://www.odoo.com/documentation/14.0/administration/install.html) from source is fairly explicit. It covers all the necessary requirements and walks the user through the base setup. Sadly, when things do inevitably go wrong, as the documentation is lacking in certain areas, the user has to rely on their own knowledge and that of any forum's that have tried resolving similar issues. One concern raised from the previously mentioned is that the whole concept of installing from source is not packaged, and almost quite raw. Granted the installation is supposed to serve only as a tool for basic development. A work-around is starting an Odoo project using pre-compiled docker images, sadly, this takes you back to the initial problem of altering the source code for your own requirements.
@@ -81,20 +114,59 @@ Knowing that this would be the general structure of the project it was time to w
 
 The resulting efforts yielded a Dockerfile and docker-compose.yml file included in this project. The Dockerfile, as mentioned above, contains all the steps that can be found in the general Odoo walk-through. The docker-compose.yml file contains the initialisation of the Odoo container and Postgres container (other container additions may follow). The containers communicate on a docker network called "odoo-net". The Odoo container is initialised with a base command and passed parameters to get things up and running and to illustrate the possibilities with the base command.
 
-Running Odoo as the root user poses a security risk that needed to be addressed. This is achieved by defining the USER in the Dockerfile.
-TODO
+Running Odoo as the root user poses a security risk that needed to be addressed. This is achieved by defining the USER in the Dockerfile. For this we need to include a non-root user which we call odoo. The new odoo user will have to have permission and ownership over the whole project folder.
+```
+RUN useradd --create-home --password $(perl -e 'print crypt($ARGV[0], "password")' 'odoo') odoo
+RUN chown -R odoo:odoo /odoo
+
+USER odoo
+
+```
 
 Another nice to have feature is to enable the SMTP emailing service, by default we have left this blank. Below is a simple guide on how to set this up:
-TODO
+```
+SMTP Configuration:
+  --email-from=EMAIL_FROM
+                      specify the SMTP email address for sending email
+  --smtp=SMTP_SERVER  specify the SMTP server for sending email
+  --smtp-port=SMTP_PORT
+                      specify the SMTP port
+  --smtp-ssl          if passed, SMTP connections will be encrypted with SSL
+                      (STARTTLS)
+  --smtp-user=SMTP_USER
+                      specify the SMTP username for sending email
+  --smtp-password=SMTP_PASSWORD
+                      specify the SMTP password for sending email
+```
+
+<a id="end-product"></a>
 
 ## 7. End Product
-#### [Go to top](##table-of-contents)
+
+<a href="#table-of-contents"><i>Go to the top</i></a>
+
+Odoo's default login screen
+
+<img src="./documentation-assets/images/odoo-login-screen.PNG">
+
+Odoo's default application installation screen
+
+
+
+<a id="known-bugs"></a>
 
 ## 8. Known Bugs
-#### [Go to top](##table-of-contents)
+
+<a href="#table-of-contents"><i>Go to the top</i></a>
+
+<i>None are registered at this point in time</i>
+
+<a id="credits"></a>
 
 ## 9. Credits
-#### [Go to top](##table-of-contents)
+
+<a href="#table-of-contents"><i>Go to the top</i></a>
+
 This section will be used to link to helpful resources that were used along the way. This external resources are not maintained by us, and therefore broken links are a possibility.
 - [Odoo GitHub](https://github.com/odoo/odoo)
 - [Inspiration for the Dockerfile from Odoo installation documentation](https://www.odoo.com/documentation/14.0/administration/install.html)
@@ -103,9 +175,12 @@ This section will be used to link to helpful resources that were used along the 
 - [Connecting to GitHub using SSH](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh)
 - [Installing docker](https://docs.docker.com/engine/install/ubuntu/)
 
+<a id="fundamentals"></a>
 
-### Fundamentals
-#### [Go to top](##table-of-contents)
+### 10. Fundamentals
+
+<a href="#table-of-contents"><i>Go to the top</i></a>
+
 To get up and running a few hacks were required to get to a stage where things could be running in an automated fashion. Below is a log of commands / ideas that happened sequentially to get this project to a running stage.
   1) Use the deployment section to get a MVP (minimum viable product) up and running
   2) The below is a list of additional parameters which can be passed to ./odoo-bin
@@ -323,41 +398,7 @@ Options:
                         (default 8192).
 ```
 
-NOTE: The below will be tidied up eventually, once the automation of the container is complete, then others can use this a basis for their own projects.
+  3) You can get into the odoo docker container by running `docker exec -it odoo /bin/bash` once in the container you can connect to Postgres using the Postgres client that we ship with the Odoo container:
 ```
--> git clone https://github.com/odoo/odoo.git
--> create a virtual environment in base dir  <<=== no longer required
-    python3 -m venv .odoo_env
-
--> Dockerfile with FROM python:3.8-buster
--> run command in CMD => docker build -t test-container . <<== this required some form of a running process such as python3 -m http.server 3000
--> run command in CMD => docker run -dp 3001:3001 test-container
-
------------------------------
--> Postgres database is created in docker-compose.yml <<== just using the basic image outlined on dockers website
--> Once up use: 'docker ps' (this allowed you to see what container id postgres was on)
--> docker inspect {container id}
--> Look at the network ports section = "Ports": {
-                                            "5432/tcp": [
-                                                {
-                                                    "HostIp": "0.0.0.0",
-                                                    "HostPort": "5450"
-                                                }
-                                            ]
-                                        },
--> Also note the "Gateway": "172.18.0.1", "IPAddress": "172.18.0.2", <<== this is subject to change
--> Use dbeaver and connect on the HostIP + Port
-
--> psql -h <REMOTE HOST> -p <REMOTE PORT> -U <DB_USER> <DB_NAME>
-The above command was used once in the odoo container to identify whether postgres was actually on the same network, it turned out that it was connected and on the same netowrk, just Odoo was recognising the details through docker-compose.
-This was frustrating because when you use the pre-built images from docker, it all worked!
----------------------
-Once Odoo was responding on localhost:XXXX I needed to configure and secure the database, the below steps were taken
-1) Click on manage database
-2) Click on SET MASTER PASSWORD == masterpassword
-3) Go back to login
-4) login using username==admin & password==admin
-5) Click in top left corner
-6) Click on setting
-7) Change default admin password
+psql -h <REMOTE HOST> -p <REMOTE PORT> -U <DB_USER> <DB_NAME>
 ```
