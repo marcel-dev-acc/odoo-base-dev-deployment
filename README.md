@@ -1,4 +1,4 @@
-# Marcel - Odoo Source Code Deployment
+# Marcel's Odoo Source Code Deployment
 This project started by taking Odoo v14 and containerising the source code. The project aims to automate the process of initialising a fully functioning production ready system that is served from docker containers. Docker offers us the ability to automate and deploy a fairly heavy system in a matter of minutes, this coupled with deployment scripts is extremely advantageous in leveraging the current functionality provided by Odoo.
 
 <a id="table-of-contents"></a>
@@ -11,7 +11,13 @@ This project started by taking Odoo v14 and containerising the source code. The 
       <li>1.2. Structure</li>
     </ol>
   </li>
-  <li>2. <a href="#features">Features</a></li>
+  <li>
+    2. <a href="#features">Features</a>
+    <ol style="list-style-type: none;">
+      <li>2.1. Current</li>
+      <li>2.2. Next phase</li>
+    </ol>
+  </li>
   <li>3. <a href="#technologies-used">Technologies Used</a></li>
   <li>4. <a href="#testing">Testing</a></li>
   <li>5. <a href="#deployment">Deployment</a></li>
@@ -51,24 +57,35 @@ The structure illustrated below is to showcase the primary files of concerns in 
 
 <a href="#table-of-contents"><i>Go to the top</i></a>
 
+### 2.1. Current
+
+- A deployment script (`virtual-box-setup-script.sh`) for setting up the VM / remote host which will host the docker containers
+- A getting started script (`getting-started-script.sh`) for initialising the project through calling the docker-compose configuration YAML
+- A Dockerfile and docker-compose file for holding system configurations
+
+### 2.2. Next phase
+
+- A dark mode walk through to illustrate how to amend the existing HTML: see https://www.odoo.com/documentation/14.0/developer/howtos/themes.html
+- A walk through illustrating how to build an Odoo module: see https://www.odoo.com/documentation/14.0/developer/howtos/backend.html
+
 <a id="technologies-used"></a>
 
 ## 3. Technologies Used
 
 <a href="#table-of-contents"><i>Go to the top</i></a>
-- shell
+- bash
 - docker
 - docker-compose
 - python3.8
 
 <a id="testing"></a>
 
-## 4. Testing
+<!-- ## 4. Testing
 
 <a href="#table-of-contents"><i>Go to the top</i></a>
 ### Automated Testing
 ### Manual Testing
-### Bugs Resolved
+### Bugs Resolved -->
 
 <a id="deployment"></a>
 
