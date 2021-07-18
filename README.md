@@ -169,7 +169,7 @@ Odoo's default login screen
 
 Odoo's default application installation screen
 
-
+<img src="./documentation-assets/images/odoo-apps-screen.PNG">
 
 <a id="known-bugs"></a>
 
