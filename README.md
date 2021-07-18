@@ -67,6 +67,7 @@ The structure illustrated below is to showcase the primary files of concerns in 
 
 - A dark mode walk through to illustrate how to amend the existing HTML: see https://www.odoo.com/documentation/14.0/developer/howtos/themes.html
 - A walk through illustrating how to build an Odoo module: see https://www.odoo.com/documentation/14.0/developer/howtos/backend.html
+- Implement NGINX to handle web traffic and enable HTTPS
 
 <a id="technologies-used"></a>
 
